@@ -15,10 +15,10 @@ bindkey -e
 ####################################################
 
 # enable extended globbing
-setopt extended_glob
+setopt extendedglob
 
 # if any of these files are modified, re-save zgenom
-ZGEN_RESET_ON_CHANGE=( ${ZDOTDIR}/**/^*.(zwc|bak)(D.N) )
+ZGEN_RESET_ON_CHANGE=(${ZDOTDIR}/**/^*.(zwc|bak)(D.N))
 
 # load zgenom
 ZGEN_SOURCE="${XDG_DATA_HOME:-$HOME/.local/share}/zgenom"
@@ -36,29 +36,41 @@ source "$ZGEN_SOURCE/zgenom.zsh"
 # this does not increase the startup time.
 zgenom autoupdate
 
-# zs_set_path=1
-
 if ! zgenom saved; then
-  # prompt
+  ## extensions
+  zgenom load jandamm/zgenom-ext-eval
+
+  ## prompt
   zgenom load romkatv/powerlevel10k powerlevel10k
 
-  # plugins
+  ## plugins
   zgenom load zsh-users/zsh-history-substring-search
-  zgenom load zsh-users/zsh-completions
-  zgenom load MichaelAquilina/zsh-you-should-use
-  zgenom load hlissner/zsh-autopair
+  zgenom eval --name zhss-bindkey <<EOF
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+EOF
 
-  # zgenom load psprint/zsh-sweep zsh-sweep.plugin.zsh
-  # zgenom bin psprint/zsh-sweep
+  zgenom load zsh-users/zsh-completions
+  zgenom load MichaelAquilina/zsh-you-should-use zsh-you-should-use.plugin.zsh
+  zgenom load hlissner/zsh-autopair zsh-autopair.plugin.zsh
+
+  # local plugins
+  zgenom load "$ZDOTDIR/plugins"
+
+  # create zoxide initialization file
+  zgenom eval --name zoxide < <(zoxide init zsh)
 
   zgenom load zsh-users/zsh-autosuggestions
   zgenom load zsh-users/zsh-syntax-highlighting
 
-  # save all to init script
+  ## save all to init script
   zgenom save
 
-  # compile zsh files
-  zgenom compile $ZGEN_RESET_ON_CHANGE
+  ## compile zsh files
+  zgenom compile "$ZGEN_RESET_ON_CHANGE"
+
+  # something is messing with the cursor, so reset it
+  tput cnorm
 fi
 
 ####################################################
@@ -76,7 +88,7 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 
 ## zsh-autosuggestions config
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=10
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_COMPLETION_IGNORE='_*|pre(cmd|exec)|man*|^*.(dll|exe)'
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert backward-delete-char)
@@ -95,8 +107,8 @@ ZSH_HIGHLIGHT_STYLES[numeric-fd]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[named-fd]='fg=yellow'
 
 # highlight variables
-ZSH_HIGHLIGHT_REGEXP+=('\$(\w+|\{.*\})' 'fg=cyan')
-ZSH_HIGHLIGHT_REGEXP+=('\[.*\]' 'fg=white')
+ZSH_HIGHLIGHT_REGEXP+=('\$([[:alnum:]_-]+|\{[[:alnum:]_-]+\})' 'fg=cyan')
+#ZSH_HIGHLIGHT_REGEXP+=('\$(\w+|\{[[:alnum:]]+(\[[[:alnum:]]+\]*)?\})' 'fg=cyan')
 
 ## zsh-you-should-use config
 YSU_MESSAGE_POSITION=after
@@ -108,25 +120,16 @@ YSU_IGNORED_ALIASES=(':q' ':x')
 ####################################################
 
 ####################################################
-## custom plugins
-####################################################
-
-# load abbr, title, osc, command-not-found
-for plugin in ${ZDOTDIR}/plugins/*.zsh; do
-  source $plugin
-done
-
-####################################################
 ## zsh settings
 ####################################################
 
 # general settings
-setopt auto_cd                              # change to directory without cd
-setopt interactive_comments                 # allow comments in interactive shell
-setopt auto_menu                            # show completion menu on a successive tab press
-setopt no_beep                              # disable beeping on tab completion
-setopt complete_in_word                     # allow completion from both ends
-setopt always_to_end                        # move cursor to end of completion
+setopt autocd                               # change to directory without cd
+setopt interactivecomments                  # allow comments in interactive shell
+setopt automenu                             # show completion menu on a successive tab press
+setopt nobeep                               # disable beeping on tab completion
+setopt completeinword                       # allow completion from both ends
+setopt alwaystoend                          # move cursor to end of completion
 
 # history settings
 HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history"
@@ -134,14 +137,14 @@ HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history"
 HISTSIZE=50000
 SAVEHIST=10000
 
-setopt extended_history                     # save timestamp and duration of command
-setopt hist_ignore_dups                     # ignore duplicate commands
-setopt hist_ignore_space                    # ignore commands starting with space
-setopt hist_reduce_blanks                   # remove leading and trailing blanks
-setopt hist_expire_dups_first               # remove duplicates first when history is full
-setopt hist_verify                          # verify history expansion
-setopt share_history                        # share history between sessions
-setopt inc_append_history                   # append new history to history file
+setopt extendedhistory                      # save timestamp and duration of command
+setopt histignoredups                       # ignore duplicate commands
+setopt histignorespace                      # ignore commands starting with space
+setopt histreduceblanks                     # remove leading and trailing blanks
+setopt histexpiredupsfirst                  # remove duplicates first when history is full
+setopt histverify                           # verify history expansion
+setopt sharehistory                         # share history between sessions
+setopt incappendhistory                     # append new history to history file
 
 # set LS_COLORS
 source <(dircolors)
@@ -184,11 +187,14 @@ zle_highlight+=(paste:none)
 PROMPT2="%8F·%f "
 
 # change zsh eol character
-PROMPT_EOL_MARK='%F{8}󰘌%f'
+[[ $TERM == 'linux' ]] || PROMPT_EOL_MARK='%F{8}󰘌%f'
 
 # a list of non-alphanum chars considered part of a word by the line editor.
 # zsh's default is "*?_-.[]~=/&;!#$%^(){}<>"
 WORDCHAR='@_'
+
+# generate completion from `--help`
+compdef _gnu_generic fzf
 
 # load other config files
 for config in ${ZDOTDIR}/configs/*.zsh; do
@@ -285,14 +291,15 @@ key[Ctrl-Z]='^Z'
 key[Ctrl-/]='^_'
 #key[Ctrl-R]='^R'
 #key[Ctrl-K]='^K'
+key[Esc]='^['
 
 bindkey -- "${key[Home]}"           beginning-of-line
 bindkey -- "${key[End]}"            end-of-line
 bindkey -- "${key[Insert]}"         overwrite-mode
 bindkey -- "${key[Delete]}"         delete-char
 bindkey -- "${key[Ctrl-Delete]}"    delete-word
-bindkey -- "${key[Up]}"             history-substring-search-up
-bindkey -- "${key[Down]}"           history-substring-search-down
+#bindkey -- "${key[Up]}"             history-substring-search-up
+#bindkey -- "${key[Down]}"           history-substring-search-down
 bindkey -- "${key[Left]}"           backward-char
 bindkey -- "${key[Right]}"          forward-char
 bindkey -- "${key[Ctrl-Left]}"      backward-word
@@ -306,6 +313,7 @@ bindkey -- "${key[Ctrl-Z]}"         undo
 bindkey -- "${key[Ctrl-/]}"         redo
 #bindkey -- "${key[Ctrl-R]}"         history-incremental-search-backward
 #bindkey -- "${key[Ctrl-K]}"         kill-line
+bindkey -- "${key[Esc]}"            kill-line
 
 # NOTE these keybindings conflict with zsh-autopair
 if declare -f autopair-init &>/dev/null; then
@@ -315,6 +323,10 @@ else
   bindkey -- "${key[Ctrl-Backspace]}" backward-delete-word
 fi
 
+# enable searching in menu selection
+zmodload zsh/complist
+bindkey -M menuselect -- '?' history-incremental-search-forward
+bindkey -M menuselect -- '/' history-incremental-search-backward
 
 # make switching between insert and normal mode faster
 KEYTIMEOUT=10
@@ -326,9 +338,6 @@ KEYTIMEOUT=10
 ####################################################
 ## misc
 ####################################################
-
-# load zoxide autojump
-source <(zoxide init zsh)
 
 # To customize prompt, run `p10k configure` or edit $ZDOTDIR/.p10k.zsh.
 [[ -f ${ZDOTDIR}/p10k.zsh ]] && source "$ZDOTDIR/p10k.zsh"

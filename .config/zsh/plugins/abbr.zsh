@@ -2,10 +2,10 @@ typeset -gA abbrs=(_foo _bar)
 typeset -gi ABBR_TIPS_STATUS=1
 
 function abbr() {
-  zparseopts -D -F -- {h,-help}=help L=list m=match e=erase
+  zparseopts -D -F -- {h,-help}=help L=list m=match e=erase || return
 
   if (( $#help )); then
-    print -P "%B%F{green}Usage%f%b: $0 [options] [abbr=cmd]"
+    print -P "%B%F{green}Usage%f%b: $0 [options] abbr=cmd"
     print -P " -h, --help   show this help message."
     print -P " -L           print each abbr in the form of calls to abbr."
     print -P " -m <args..>  match abbreviation."
@@ -27,7 +27,7 @@ function abbr() {
     unabbr $@
     return 0
   fi
-  
+
   if (( ! $# )); then
     abbr-list
     return 0
@@ -45,14 +45,14 @@ function abbr() {
 
 function unabbr() {
   if [[ $1 =~ "-h|--help" ]]; then
-    print -P "%B%F{green}Usage%f%b: $0 [options] [abbr]"
+    print -P "%B%F{green}Usage%f%b: $0 [options] abbr"
     print -P " -h, --help   show this help message."
     return 0
   fi
 
   local abbr=$1
   if [[ $abbrs[$abbr] ]]; then
-    unset "abbrs[$abbr]" 
+    unset "abbrs[$abbr]"
     unalias $abbr
     print -P "%B%F{green}success%f%b: abbreviation removed."
   else
@@ -90,7 +90,7 @@ zle -N abbr-expend
 
 bindkey ' ' abbr-expend
 bindkey '^ ' magic-space
-bindkey -M isearch ' ' self-insert
+#bindkey -M isearch ' ' self-insert
 
 function abbr-expend-and-accept-line() {
   abbr-expend

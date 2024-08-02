@@ -24,7 +24,7 @@ export LESS='-F -R --use-color -Dd+r$Du+b$DS+ky$DP+kg$DE+kR$'
 export MANROFFOPT='-P -c'
 
 # git config
-local GIT_CONFIG_DIR="$XDG_CONFIG_HOME/git"
+GIT_CONFIG_DIR="$XDG_CONFIG_HOME/git"
 [[ ! -d $GIT_CONFIG_DIR ]] && mkdir -p "$GIT_CONFIG_DIR"
 for file in $HOME/.{gitconfig,gitignore,gitattributes,git-credentials,gitk}; do
   if [[ -f $file ]]; then
@@ -42,6 +42,7 @@ for file in $HOME/.{gitconfig,gitignore,gitattributes,git-credentials,gitk}; do
     esac
   fi
 done
+unset GIT_CONFIG_DIR
 
 # wget
 export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
