@@ -1,6 +1,6 @@
 # Collected from https://github.com/lewisacidic/fish-git-abbr/blob/master/conf.d/git_abbr.fish
 
-declare -f abbr &>/dev/null || return
+(( ${+functions[abbr]} )) || return
 
 function git_current_branch() {
   command git branch --show-current

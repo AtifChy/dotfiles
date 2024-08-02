@@ -1,14 +1,11 @@
 ####################################################
-## load these at the beginning
+## powerlevel10k instant prompt
 ####################################################
 
 # enable powerlevel10k instant prompt. should stay close to the top of ~/.zshrc.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-# set emacs keybinding
-bindkey -e
 
 ####################################################
 ## zgenom initialization
@@ -44,6 +41,10 @@ if ! zgenom saved; then
   zgenom load romkatv/powerlevel10k powerlevel10k
 
   ## plugins
+
+  #local plugins (init)
+  zgenom load "$ZDOTDIR/plugins/init"
+
   zgenom load zsh-users/zsh-history-substring-search
   zgenom eval --name history-substring-search-init <<EOF
 bindkey '^[[A' history-substring-search-up      # up
@@ -58,8 +59,8 @@ EOF
 bindkey '^H' autopair-delete-word               # ctrl-backspace
 EOF
 
-  # local plugins
-  zgenom load "$ZDOTDIR/plugins"
+  # local plugins (lazy)
+  zgenom load "$ZDOTDIR/plugins/lazy"
 
   # create zoxide initialization file
   zgenom eval --name zoxide < <(zoxide init zsh)
@@ -94,7 +95,8 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_COMPLETION_IGNORE='_*|pre(cmd|exec)|man*|^*.(dll|exe)'
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE='_*|pre(cmd|exec)|man*'
+# ZSH_AUTOSUGGEST_HISTORY_IGNORE='(cd|nvim|vim|vi|nano) *'
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert backward-delete-char)
 
 ## zsh-syntax-highlighting config
@@ -112,7 +114,7 @@ ZSH_HIGHLIGHT_STYLES[named-fd]='fg=yellow'
 
 # highlight variables
 ZSH_HIGHLIGHT_REGEXP+=('\$([[:alnum:]_-]+|\{[[:alnum:]_-]+\})' 'fg=cyan')
-#ZSH_HIGHLIGHT_REGEXP+=('\$(\w+|\{[[:alnum:]]+(\[[[:alnum:]]+\]*)?\})' 'fg=cyan')
+#ZSH_HIGHLIGHT_REGEXP+=('\$([[:alnum:]_-]+|\{[[:alnum:]_-]+(\[[[:alnum:]_-]+\]*)?\})' 'fg=cyan')
 
 ## zsh-you-should-use config
 YSU_MESSAGE_POSITION=after
@@ -252,7 +254,7 @@ alias :x='exit'
 alias dot="git --git-dir=${XDG_DATA_HOME}/dotfiles --work-tree=${HOME}"
 
 # abbreviations
-if declare -f abbr &>/dev/null; then
+if (( ${+functions[abbr]} )); then
   abbr ..='cd ..'
   abbr ...='cd ../..'
   abbr ....='cd ../../..'
@@ -266,49 +268,6 @@ fi
 
 ####################################################
 ## end of aliases
-####################################################
-
-####################################################
-## keybinding
-####################################################
-
-bindkey '^[[H' beginning-of-line                    # home
-bindkey '^[[F' end-of-line                          # end
-bindkey '^[[2~' overwrite-mode                      # insert
-bindkey '^[[3~' delete-char                         # delete
-bindkey '^[[3;5~' delete-word                       # ctrl-delete
-bindkey '^[[D' backward-char                        # left
-bindkey '^[[C' forward-char                         # right
-bindkey '^[[1;5D' backward-word                     # ctrl-left
-bindkey '^[[1;5C' forward-word                      # ctrl-right
-bindkey '^[[1;3D' backward-word                     # alt-left
-bindkey '^[[1;3C' forward-word                      # alt-right
-bindkey '^[[5~' beginning-of-buffer-or-history      # pageup
-bindkey '^[[6~' end-of-buffer-or-history            # pagedown
-bindkey '^[[Z' reverse-menu-complete                # shift-tab
-bindkey '^Z' undo                                   # ctrl-z
-bindkey '^_' redo                                   # ctrl-/
-bindkey '^[' kill-line                              # esc
-
-# bindkey '^?' backward-delete-char                 # backspace
-# bindkey '^H' backward-delete-word                 # ctrl-backspace
-# bindkey '^R' history-incremental-search-backward  # ctrl-r
-# bindkey '^K' kill-line                            # ctrl-k
-
-# enable searching in menu selection
-zmodload zsh/complist
-bindkey -M menuselect -- '?' history-incremental-search-forward
-bindkey -M menuselect -- '/' history-incremental-search-backward
-
-# make switching between insert and normal mode faster
-KEYTIMEOUT=10
-
-####################################################
-## end of keybinding
-####################################################
-
-####################################################
-## misc
 ####################################################
 
 # To customize prompt, run `p10k configure` or edit $ZDOTDIR/.p10k.zsh.

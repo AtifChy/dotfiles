@@ -38,5 +38,3 @@ function title_preexec {
 
 add-zsh-hook -Uz precmd title_precmd
 add-zsh-hook -Uz preexec title_preexec
-
-unsetopt extended_glob

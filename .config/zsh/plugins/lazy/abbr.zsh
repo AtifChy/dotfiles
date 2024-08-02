@@ -79,16 +79,27 @@ function abbr-list() {
   done | sort
 }
 
-function abbr-expend() {
+function _abbr_match() {
   if [[ ${LBUFFER} =~ '(^|\s)('${(j:|:)${${(k)abbrs}//\./\\.}}')$' ]]; then
     zle _expand_alias
     ABBR_TIPS_STATUS=0
   fi
-  zle magic-space
+}
+
+function abbr-expend() {
+  _abbr_match
+  zle .self-insert
 }
 zle -N abbr-expend
 
+function abbr-expend-end-of-line() {
+  _abbr_match
+  zle .end-of-line
+}
+zle -N abbr-expend-end-of-line
+
 bindkey ' ' abbr-expend
+bindkey '^[[F' abbr-expend-end-of-line
 bindkey '^ ' magic-space
 #bindkey -M isearch ' ' self-insert
 
@@ -98,4 +109,3 @@ function abbr-expend-and-accept-line() {
   zle .accept-line
 }
 zle -N accept-line abbr-expend-and-accept-line
-
