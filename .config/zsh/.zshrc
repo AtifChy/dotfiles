@@ -45,14 +45,18 @@ if ! zgenom saved; then
 
   ## plugins
   zgenom load zsh-users/zsh-history-substring-search
-  zgenom eval --name zhss-bindkey <<EOF
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+  zgenom eval --name history-substring-search-init <<EOF
+bindkey '^[[A' history-substring-search-up      # up
+bindkey '^[[B' history-substring-search-down    # down
 EOF
 
   zgenom load zsh-users/zsh-completions
   zgenom load MichaelAquilina/zsh-you-should-use zsh-you-should-use.plugin.zsh
+
   zgenom load hlissner/zsh-autopair zsh-autopair.plugin.zsh
+  zgenom eval --name autopair-init <<EOF
+bindkey '^H' autopair-delete-word               # ctrl-backspace
+EOF
 
   # local plugins
   zgenom load "$ZDOTDIR/plugins"
@@ -268,60 +272,28 @@ fi
 ## keybinding
 ####################################################
 
-typeset -gA key
-key[Home]='^[[H'
-key[End]='^[[F'
-key[Insert]='^[[2~'
-key[Backspace]='^?'
-key[Ctrl-Backspace]='^H'
-key[Delete]='^[[3~'
-key[Ctrl-Delete]='^[[3;5~'
-key[Up]='^[[A'
-key[Down]='^[[B'
-key[Left]='^[[D'
-key[Right]='^[[C'
-key[Ctrl-Left]='^[[1;5D'
-key[Ctrl-Right]='^[[1;5C'
-key[Alt-Left]='^[[1;3D'
-key[Alt-Right]='^[[1;3C'
-key[PageUp]='^[[5~'
-key[PageDown]='^[[6~'
-key[Shift-Tab]='^[[Z'
-key[Ctrl-Z]='^Z'
-key[Ctrl-/]='^_'
-#key[Ctrl-R]='^R'
-#key[Ctrl-K]='^K'
-key[Esc]='^['
+bindkey '^[[H' beginning-of-line                    # home
+bindkey '^[[F' end-of-line                          # end
+bindkey '^[[2~' overwrite-mode                      # insert
+bindkey '^[[3~' delete-char                         # delete
+bindkey '^[[3;5~' delete-word                       # ctrl-delete
+bindkey '^[[D' backward-char                        # left
+bindkey '^[[C' forward-char                         # right
+bindkey '^[[1;5D' backward-word                     # ctrl-left
+bindkey '^[[1;5C' forward-word                      # ctrl-right
+bindkey '^[[1;3D' backward-word                     # alt-left
+bindkey '^[[1;3C' forward-word                      # alt-right
+bindkey '^[[5~' beginning-of-buffer-or-history      # pageup
+bindkey '^[[6~' end-of-buffer-or-history            # pagedown
+bindkey '^[[Z' reverse-menu-complete                # shift-tab
+bindkey '^Z' undo                                   # ctrl-z
+bindkey '^_' redo                                   # ctrl-/
+bindkey '^[' kill-line                              # esc
 
-bindkey -- "${key[Home]}"           beginning-of-line
-bindkey -- "${key[End]}"            end-of-line
-bindkey -- "${key[Insert]}"         overwrite-mode
-bindkey -- "${key[Delete]}"         delete-char
-bindkey -- "${key[Ctrl-Delete]}"    delete-word
-#bindkey -- "${key[Up]}"             history-substring-search-up
-#bindkey -- "${key[Down]}"           history-substring-search-down
-bindkey -- "${key[Left]}"           backward-char
-bindkey -- "${key[Right]}"          forward-char
-bindkey -- "${key[Ctrl-Left]}"      backward-word
-bindkey -- "${key[Ctrl-Right]}"     forward-word
-bindkey -- "${key[Alt-Left]}"       backward-word
-bindkey -- "${key[Alt-Right]}"      forward-word
-bindkey -- "${key[PageUp]}"         beginning-of-buffer-or-history
-bindkey -- "${key[PageDown]}"       end-of-buffer-or-history
-bindkey -- "${key[Shift-Tab]}"      reverse-menu-complete
-bindkey -- "${key[Ctrl-Z]}"         undo
-bindkey -- "${key[Ctrl-/]}"         redo
-#bindkey -- "${key[Ctrl-R]}"         history-incremental-search-backward
-#bindkey -- "${key[Ctrl-K]}"         kill-line
-bindkey -- "${key[Esc]}"            kill-line
-
-# NOTE these keybindings conflict with zsh-autopair
-if declare -f autopair-init &>/dev/null; then
-  bindkey -- "${key[Ctrl-Backspace]}" autopair-delete-word
-else
-  bindkey -- "${key[Backspace]}"      backward-delete-char
-  bindkey -- "${key[Ctrl-Backspace]}" backward-delete-word
-fi
+# bindkey '^?' backward-delete-char                 # backspace
+# bindkey '^H' backward-delete-word                 # ctrl-backspace
+# bindkey '^R' history-incremental-search-backward  # ctrl-r
+# bindkey '^K' kill-line                            # ctrl-k
 
 # enable searching in menu selection
 zmodload zsh/complist
