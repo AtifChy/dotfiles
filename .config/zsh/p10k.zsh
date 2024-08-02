@@ -357,7 +357,7 @@
 
   # Formatter for Git status.
   #
-  # Example output: master wip ⇡42⇣42 *42 merge x42 +42 ~42 -42 ?42.
+  # Example output: master wip (merging) ⇡42⇣42 *42 x42 +42~42-42 ?42.
   #
   # You can edit the function to customize how Git status looks.
   #
@@ -427,9 +427,9 @@
     if [[ $VCS_STATUS_COMMIT_SUMMARY == (|*[^[:alnum:]])(wip|WIP)(|[^[:alnum:]]*) ]]; then
       res+=" ${modified}wip"
     fi
-    
+
     # 'merge' if the repo is in an unusual state.
-    [[ -n $VCS_STATUS_ACTION     ]] && res+=" ${meta}(${conflicted}MERGING${meta})"
+    [[ -n $VCS_STATUS_ACTION     ]] && res+=" ${meta}(${conflicted}merging${meta})"
 
     if (( VCS_STATUS_COMMITS_AHEAD || VCS_STATUS_COMMITS_BEHIND )); then
       # ⇡42 if ahead of the remote.
@@ -451,13 +451,15 @@
     (( VCS_STATUS_STASHES        )) && res+=" ${clean}\$${VCS_STATUS_STASHES}"
     # x42 if have merge conflicts.
     (( VCS_STATUS_NUM_CONFLICTED )) && res+=" ${conflicted}x${VCS_STATUS_NUM_CONFLICTED}"
+    # +42~42-42 if have staged, modified and deleted changes.
+    (( VCS_STATUS_NUM_STAGED )) || (( VCS_STATUS_NUM_UNSTAGED )) && res+=" "
     # +42 if have staged changes.
-    (( VCS_STATUS_NUM_STAGED     )) && res+=" ${modified}+${VCS_STATUS_NUM_STAGED}"
+    (( VCS_STATUS_NUM_STAGED     )) && res+="${modified}+${VCS_STATUS_NUM_STAGED}"
     # ~42 if have modified changes.
     (( VCS_STATUS_NUM_UNSTAGED - VCS_STATUS_NUM_UNSTAGED_DELETED )) \
-      && res+=" ${modified}~$(( VCS_STATUS_NUM_UNSTAGED - VCS_STATUS_NUM_UNSTAGED_DELETED ))"
+      && res+="${modified}~$(( VCS_STATUS_NUM_UNSTAGED - VCS_STATUS_NUM_UNSTAGED_DELETED ))"
     # -42 if have deleted changes
-    (( VCS_STATUS_NUM_UNSTAGED_DELETED )) && res+=" ${modified}-${VCS_STATUS_NUM_UNSTAGED_DELETED}"
+    (( VCS_STATUS_NUM_UNSTAGED_DELETED )) && res+="${modified}-${VCS_STATUS_NUM_UNSTAGED_DELETED}"
     # ?42 if have untracked files. It's really a question mark, your font isn't broken.
     # See POWERLEVEL9K_VCS_UNTRACKED_ICON above if you want to use a different icon.
     # Remove the next line if you don't want to see untracked files at all.
@@ -736,7 +738,7 @@
   typeset -g POWERLEVEL9K_RANGER_FOREGROUND=3
   # Custom icon.
   # typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION='⭐'
-  
+
   ####################[ yazi: yazi shell (https://github.com/sxyazi/yazi) ]#####################
   # Yazi shell color.
   typeset -g POWERLEVEL9K_YAZI_FOREGROUND=3

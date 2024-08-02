@@ -130,12 +130,12 @@ YSU_IGNORED_ALIASES=(':q' ':x')
 ####################################################
 
 # general settings
-setopt autocd                               # change to directory without cd
-setopt interactivecomments                  # allow comments in interactive shell
-setopt automenu                             # show completion menu on a successive tab press
-setopt nobeep                               # disable beeping on tab completion
-setopt completeinword                       # allow completion from both ends
-setopt alwaystoend                          # move cursor to end of completion
+setopt autocd                            # change to directory without cd
+setopt interactivecomments               # allow comments in interactive shell
+setopt automenu                          # show completion menu on a successive tab press
+setopt nobeep                            # disable beeping on tab completion
+setopt completeinword                    # allow completion from both ends
+setopt alwaystoend                       # move cursor to end of completion
 
 # history settings
 HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history"
@@ -143,14 +143,14 @@ HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history"
 HISTSIZE=50000
 SAVEHIST=10000
 
-setopt extendedhistory                      # save timestamp and duration of command
-setopt histignoredups                       # ignore duplicate commands
-setopt histignorespace                      # ignore commands starting with space
-setopt histreduceblanks                     # remove leading and trailing blanks
-setopt histexpiredupsfirst                  # remove duplicates first when history is full
-setopt histverify                           # verify history expansion
-setopt sharehistory                         # share history between sessions
-setopt incappendhistory                     # append new history to history file
+setopt extendedhistory                   # save timestamp and duration of command
+setopt histignoredups                    # ignore duplicate commands
+setopt histignorespace                   # ignore commands starting with space
+setopt histreduceblanks                  # remove leading and trailing blanks
+setopt histexpiredupsfirst               # remove duplicates first when history is full
+setopt histverify                        # verify history expansion
+setopt sharehistory                      # share history between sessions
+setopt incappendhistory                  # append new history to history file
 
 # set LS_COLORS
 source <(dircolors)
