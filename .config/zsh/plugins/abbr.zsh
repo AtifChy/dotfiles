@@ -14,7 +14,7 @@ function abbr() {
   fi
 
   if (( $#list )); then
-    abbr-list 1
+    abbr-list --cmd
     return 0
   fi
 
@@ -61,10 +61,16 @@ function unabbr() {
 }
 
 function abbr-list() {
-  PRESERVE_FORM=${@:-0}
+  if [[ $1 =~ '-h|--help' ]]; then
+    print -P "%B%F{green}Usage%f%b: $0 [options]"
+    print -P " -h, --help   show this help message."
+    print -P " --cmd        print each abbr in the form of calls to abbr."
+    return 0
+  fi
+
   for abbr cmd in ${(kv)abbrs}; do
     if [[ $abbr != '_foo' ]]; then
-      if (( PRESERVE_FORM )); then
+      if [[ $1 == '--cmd' ]]; then
         printf 'abbr %s=%s\n' ${(qq)abbr} ${(qq)cmd}
       else
         printf '\e[34;1m%-10s\e[0m => %s\n' $abbr $cmd
@@ -78,7 +84,7 @@ function abbr-expend() {
     zle _expand_alias
     ABBR_TIPS_STATUS=0
   fi
-  zle self-insert
+  zle magic-space
 }
 zle -N abbr-expend
 

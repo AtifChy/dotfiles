@@ -1,3 +1,7 @@
+####################################################
+## load these at the beginning
+####################################################
+
 # enable powerlevel10k instant prompt. should stay close to the top of ~/.zshrc.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -16,9 +20,6 @@ setopt extended_glob
 # if any of these files are modified, re-save zgenom
 ZGEN_RESET_ON_CHANGE=( ${ZDOTDIR}/**/^*.(zwc|bak)(D.N) )
 
-# disable extended globbing
-unsetopt extended_glob
-
 # load zgenom
 ZGEN_SOURCE="${XDG_DATA_HOME:-$HOME/.local/share}/zgenom"
 if [[ ! -d $ZGEN_SOURCE ]]; then
@@ -35,6 +36,8 @@ source "$ZGEN_SOURCE/zgenom.zsh"
 # this does not increase the startup time.
 zgenom autoupdate
 
+# zs_set_path=1
+
 if ! zgenom saved; then
   # prompt
   zgenom load romkatv/powerlevel10k powerlevel10k
@@ -44,6 +47,10 @@ if ! zgenom saved; then
   zgenom load zsh-users/zsh-completions
   zgenom load MichaelAquilina/zsh-you-should-use
   zgenom load hlissner/zsh-autopair
+
+  # zgenom load psprint/zsh-sweep zsh-sweep.plugin.zsh
+  # zgenom bin psprint/zsh-sweep
+
   zgenom load zsh-users/zsh-autosuggestions
   zgenom load zsh-users/zsh-syntax-highlighting
 
@@ -176,6 +183,9 @@ zle_highlight+=(paste:none)
 # prompt used in multiline commands
 PROMPT2="%8F·%f "
 
+# change zsh eol character
+PROMPT_EOL_MARK='%F{8}󰘌%f'
+
 # a list of non-alphanum chars considered part of a word by the line editor.
 # zsh's default is "*?_-.[]~=/&;!#$%^(){}<>"
 WORDCHAR='@_'
@@ -232,7 +242,7 @@ alias :x='exit'
 alias dot="git --git-dir=${XDG_DATA_HOME}/dotfiles --work-tree=${HOME}"
 
 # abbreviations
-if type abbr &>/dev/null; then
+if declare -f abbr &>/dev/null; then
   abbr ..='cd ..'
   abbr ...='cd ../..'
   abbr ....='cd ../../..'
@@ -298,10 +308,13 @@ bindkey -- "${key[Ctrl-/]}"         redo
 #bindkey -- "${key[Ctrl-K]}"         kill-line
 
 # NOTE these keybindings conflict with zsh-autopair
-if ! type autopair-init &>/dev/null; then
+if declare -f autopair-init &>/dev/null; then
+  bindkey -- "${key[Ctrl-Backspace]}" autopair-delete-word
+else
   bindkey -- "${key[Backspace]}"      backward-delete-char
-  bindkey -- "${key[Ctrl-Backspace]}" backward-kill-word
+  bindkey -- "${key[Ctrl-Backspace]}" backward-delete-word
 fi
+
 
 # make switching between insert and normal mode faster
 KEYTIMEOUT=10

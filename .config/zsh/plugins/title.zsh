@@ -2,7 +2,7 @@
 ## terminal title
 ####################################################
 
-TERM_TITLE="%n@%m:%30<…<%~%<<"
+typeset -g TERM_TITLE="%n@%m:%30<…<%~%<<"
 
 setopt extended_glob
 

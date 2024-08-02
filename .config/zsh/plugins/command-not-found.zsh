@@ -4,6 +4,7 @@ function command_not_found_handler() {
   pkgs=(${(f)"$(pkgfile -bvw -- "$cmd" 2>/dev/null)"})
   
   if [[ -n "$pkgs" ]]; then
+    local pkg repo name version bin
     printf '\e[31;1m%s\e[0m may be found in the following packages:\n' "$cmd"
     for pkg in $pkgs[@]; do
       pkg=(${=pkg})

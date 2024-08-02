@@ -7,6 +7,8 @@
 
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/bash/history"
 
+alias dot="git --git-dir=$XDG_DATA_HOME/dotfiles --work-dir=$HOME"
+
 alias ls='ls --color=auto'
 alias la='ls -a'
 alias ll='ls -alh --group-directories-first'
