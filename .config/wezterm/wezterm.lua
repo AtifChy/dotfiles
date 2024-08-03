@@ -158,24 +158,21 @@ config.font_rules = {
 	{
 		intensity = "Bold",
 		italic = false,
-		font = wezterm.font({
-			family = "Operator Mono SSm Lig",
+		font = wezterm.font("Operator Mono SSm Lig", {
 			weight = "Bold",
 		}),
 	},
 	{
 		intensity = "Bold",
 		italic = true,
-		font = wezterm.font({
-			family = "Operator Mono SSm Lig",
+		font = wezterm.font("Operator Mono SSm Lig", {
 			weight = "Bold",
 		}),
 	},
 	{
 		intensity = "Normal",
 		italic = true,
-		font = wezterm.font({
-			family = "Operator Mono SSm Lig",
+		font = wezterm.font("Operator Mono SSm Lig", {
 			weight = "DemiLight",
 			style = "Italic",
 		}),
@@ -183,18 +180,18 @@ config.font_rules = {
 	{
 		intensity = "Half",
 		italic = false,
-		font = wezterm.font({
-			family = "Operator Mono SSm Lig",
-			weight = 325,
+		font = wezterm.font("Operator Mono SSm Lig", {
+			weight = "DemiLight",
+			foreground = colors.bright_black,
 		}),
 	},
 	{
 		intensity = "Half",
 		italic = true,
-		font = wezterm.font({
-			family = "Operator Mono SSm Lig",
-			weight = 325,
+		font = wezterm.font("Operator Mono SSm Lig", {
+			weight = "DemiLight",
 			style = "Italic",
+			foreground = colors.bright_black,
 		}),
 	},
 }
