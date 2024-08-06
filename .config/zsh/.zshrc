@@ -55,18 +55,24 @@ EOF
   zgenom load MichaelAquilina/zsh-you-should-use zsh-you-should-use.plugin.zsh
 
   zgenom load hlissner/zsh-autopair zsh-autopair.plugin.zsh
-  zgenom eval --name autopair-init <<EOF
-bindkey '^H' autopair-delete-word               # ctrl-backspace
-EOF
+  zgenom eval --name autopair-init "bindkey '^H' autopair-delete-word   # ctrl-backspace"
 
   # create zoxide initialization file
   zgenom eval --name zoxide < <(zoxide init zsh)
 
+  zgenom load zsh-users/zsh-autosuggestions
+  zgenom load zsh-users/zsh-syntax-highlighting
+
   # local plugins (lazy)
   zgenom load "$ZDOTDIR/plugins/lazy"
 
-  zgenom load zsh-users/zsh-autosuggestions
-  zgenom load zsh-users/zsh-syntax-highlighting
+  # ohmyzsh
+  zgenom ohmyzsh plugins/extract
+  zgenom ohmyzsh plugins/sudo
+  zgenom eval --name sudo-bind <<EOF
+bindkey -r '^[^['
+bindkey '^[s' sudo-command-line   # alt+s
+EOF
 
   ## save all to init script
   zgenom save
@@ -95,7 +101,7 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_COMPLETION_IGNORE='_*|pre(cmd|exec)|man*'
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE='_*|pre(cmd|exec)|man*|\#*'
 # ZSH_AUTOSUGGEST_HISTORY_IGNORE='(cd|nvim|vim|vi|nano) *'
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert backward-delete-char)
 
@@ -251,7 +257,7 @@ alias reload='exec zsh'
 alias :q='exit'
 alias :x='exit'
 
-alias dot="git --git-dir=${XDG_DATA_HOME}/dotfiles --work-tree=${HOME}"
+alias dot="git --git-dir="${XDG_DATA_HOME}"/dotfiles --work-tree="${HOME}""
 
 # abbreviations
 if (( ${+functions[abbr]} )); then
