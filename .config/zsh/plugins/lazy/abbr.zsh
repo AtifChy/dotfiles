@@ -80,9 +80,11 @@ function abbr-list() {
 }
 
 function _abbr_match() {
+  # ts=$(date +%Y-%m-%d\ %H:%M:%S)
+  # echo "[$ts] LBUFFER: $LBUFFER" >> /tmp/abbr.log
+  # echo "[$ts] RBUFFER: $RBUFFER" >> /tmp/abbr.log
   if [[ ${LBUFFER} =~ '(^|\s)('${(j:|:)${${(k)abbrs}//\./\\.}}')$' ]]; then
-    zle _expand_alias
-    ABBR_TIPS_STATUS=0
+    zle _expand_alias && ABBR_TIPS_STATUS=0
   fi
 }
 
@@ -92,20 +94,29 @@ function abbr-expend() {
 }
 zle -N abbr-expend
 
-function abbr-expend-end-of-line() {
+bindkey ' ' abbr-expend
+bindkey '^ ' magic-space
+
+function _abbr-expend-and-accept-line() {
+  _abbr_match
+  zle .accept-line
+}
+zle -N accept-line _abbr-expend-and-accept-line
+
+function _abbr-expend-and-forward-char() {
+  _abbr_match
+  zle .forward-char
+}
+zle -N forward-char _abbr-expend-and-forward-char
+
+function _abbr-expend-and-forward-word() {
+  _abbr_match
+  zle .forward-word
+}
+zle -N forward-word _abbr-expend-and-forward-word
+
+function _abbr-expend-and-end-of-line() {
   _abbr_match
   zle .end-of-line
 }
-zle -N abbr-expend-end-of-line
-
-bindkey ' ' abbr-expend
-bindkey '^[[F' abbr-expend-end-of-line
-bindkey '^ ' magic-space
-#bindkey -M isearch ' ' self-insert
-
-function abbr-expend-and-accept-line() {
-  abbr-expend
-  zle .backward-delete-char
-  zle .accept-line
-}
-zle -N accept-line abbr-expend-and-accept-line
+zle -N end-of-line _abbr-expend-and-end-of-line
