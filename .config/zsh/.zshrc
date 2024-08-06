@@ -59,11 +59,11 @@ EOF
 bindkey '^H' autopair-delete-word               # ctrl-backspace
 EOF
 
-  # local plugins (lazy)
-  zgenom load "$ZDOTDIR/plugins/lazy"
-
   # create zoxide initialization file
   zgenom eval --name zoxide < <(zoxide init zsh)
+
+  # local plugins (lazy)
+  zgenom load "$ZDOTDIR/plugins/lazy"
 
   zgenom load zsh-users/zsh-autosuggestions
   zgenom load zsh-users/zsh-syntax-highlighting
@@ -72,7 +72,7 @@ EOF
   zgenom save
 
   ## compile zsh files
-  zgenom compile "$ZGEN_RESET_ON_CHANGE"
+  zgenom compile "$ZDOTDIR"
 
   # something is messing with the cursor, so reset it
   tput cnorm
