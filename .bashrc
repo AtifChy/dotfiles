@@ -6,14 +6,14 @@
 [[ $- != *i* ]] && return
 
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/bash/history"
-
+mkdir -p "$(dirname "$HISTFILE")"
 
 # bash settings
 shopt -s autocd
 shopt -s checkwinsize
 
 # aliases
-alias dot="git --git-dir=$XDG_DATA_HOME/dotfiles --work-dir=$HOME"
+alias dot="git --git-dir=${XDG_DATA_HOME}/dotfiles --work-tree=${HOME}"
 
 alias ls='ls --color=auto'
 alias la='ls -a'

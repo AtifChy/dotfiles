@@ -257,7 +257,7 @@ alias reload='exec zsh'
 alias :q='exit'
 alias :x='exit'
 
-alias dot="git --git-dir="${XDG_DATA_HOME}"/dotfiles --work-tree="${HOME}""
+alias dot="git --git-dir=${XDG_DATA_HOME}/dotfiles --work-tree=${HOME}"
 
 # abbreviations
 if (( ${+functions[abbr]} )); then
