@@ -2,15 +2,22 @@ typeset -gA abbrs=(_foo _bar)
 typeset -gi ABBR_TIPS_STATUS=1
 
 function abbr() {
-  zparseopts -D -F -- {h,-help}=help L=list m=match e=erase || return
+  zparseopts -D -F -- {h,-help}=help g=global L=list m=match e=erase || return
+
+  local flag=
 
   if (( $#help )); then
     print -P "%B%F{green}Usage%f%b: $0 [options] abbr=cmd"
     print -P " -h, --help   show this help message."
-    print -P " -L           print each abbr in the form of calls to abbr."
+    print -p " -g <args..>  define global abbreviations. [WIP]"
+    print -P " -L           print each abbr in the form of calls to abbreviations."
     print -P " -m <args..>  match abbreviation."
     print -P " -e <args..>  remove abbreviation."
     return 0
+  fi
+
+  if (( $#global )); then
+    flag='-g'
   fi
 
   if (( $#list )); then
@@ -37,7 +44,7 @@ function abbr() {
   local cmd=${1#*=}
   if [[ -n $abbr && -n $cmd ]]; then
     abbrs[$abbr]=$cmd
-    alias $abbr=$cmd
+    alias $flag $abbr=$cmd
   else
     print -P "%B%F{red}error%f%b: invalid abbreviation."
   fi
