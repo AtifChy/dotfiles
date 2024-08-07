@@ -27,7 +27,7 @@ export MANROFFOPT='-P -c'
 GIT_CONFIG_DIR="$XDG_CONFIG_HOME/git"
 [[ ! -d $GIT_CONFIG_DIR ]] && mkdir -p "$GIT_CONFIG_DIR"
 for file in $HOME/.{gitconfig,gitignore,gitattributes,git-credentials,gitk}; do
-  if [[ -f $file ]]; then
+  if [[ -f $file && -s $file ]]; then
     _basename=${file:t}
     case $_basename in
       '.gitk')
@@ -46,9 +46,9 @@ unset GIT_CONFIG_DIR
 
 # wget
 export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
-if [[ ! -f $WGETRC ]]; then
+if [[ ! -f $WGETRC || ! -s $WGETRC ]]; then
   mkdir -p "${WGETRC:h}"
-  echo "hsts-file=$XDG_CACHE_HOME/wget-hsts" >> "$WGETRC"
+  print "hsts-file=$XDG_CACHE_HOME/wget-hsts" >> "$WGETRC"
 fi
 
 # node
@@ -57,7 +57,7 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node/repl_history"
 
 # npm
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
-if [[ ! -f $NPM_CONFIG_USERCONFIG ]]; then
+if [[ ! -f $NPM_CONFIG_USERCONFIG || ! -s $NPM_CONFIG_USERCONFIG ]]; then
   mkdir -p "${NPM_CONFIG_USERCONFIG:h}"
   tee <<EOF >> "$NPM_CONFIG_USERCONFIG"
 prefix=$XDG_DATA_HOME/npm
