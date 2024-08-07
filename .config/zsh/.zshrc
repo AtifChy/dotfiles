@@ -1,6 +1,11 @@
 ####################################################
-## powerlevel10k instant prompt
+## start of zshrc
 ####################################################
+
+# if not running interactively, don't do anything
+if [[ $- != *i* ]]; then
+  return
+fi
 
 # enable powerlevel10k instant prompt. should stay close to the top of ~/.zshrc.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -46,16 +51,18 @@ if ! zgenom saved; then
   zgenom load "$ZDOTDIR/plugins/init"
 
   zgenom load zsh-users/zsh-history-substring-search
-  zgenom eval --name history-substring-search-init <<EOF
-bindkey '^[[A' history-substring-search-up      # up
-bindkey '^[[B' history-substring-search-down    # down
-EOF
+  zgenom eval --name history-substring-search-init <<-EOF
+		bindkey '^[[A' history-substring-search-up      # up
+		bindkey '^[[B' history-substring-search-down    # down
+	EOF
 
   zgenom load zsh-users/zsh-completions
   zgenom load MichaelAquilina/zsh-you-should-use zsh-you-should-use.plugin.zsh
 
   zgenom load hlissner/zsh-autopair zsh-autopair.plugin.zsh
-  zgenom eval --name autopair-init "bindkey '^H' autopair-delete-word   # ctrl-backspace"
+  zgenom eval --name autopair-init <<-EOF
+		bindkey '^H' autopair-delete-word   # ctrl-backspace
+	EOF
 
   # create zoxide initialization file
   zgenom eval --name zoxide < <(zoxide init zsh)
@@ -63,16 +70,22 @@ EOF
   zgenom load zsh-users/zsh-autosuggestions
   zgenom load zsh-users/zsh-syntax-highlighting
 
-  # local plugins (lazy)
-  zgenom load "$ZDOTDIR/plugins/lazy"
+  # create aliases for gh copilot
+  zgenom eval --name gh-copilot < <(gh copilot alias -- zsh)
+
+  # load fzf completions
+  zgenom eval --name fzf-completion < <(fzf --zsh)
 
   # ohmyzsh
   zgenom ohmyzsh plugins/extract
   zgenom ohmyzsh plugins/sudo
-  zgenom eval --name sudo-bind <<EOF
-bindkey -r '^[^['
-bindkey '^[s' sudo-command-line   # alt+s
-EOF
+  zgenom eval --name sudo-bind <<-EOF
+		bindkey -r '^[^['
+		bindkey '^[s' sudo-command-line   # alt+s
+	EOF
+
+  # local plugins (lazy)
+  zgenom load "$ZDOTDIR/plugins/lazy"
 
   ## save all to init script
   zgenom save
@@ -138,8 +151,8 @@ YSU_IGNORED_ALIASES=(':q' ':x')
 # general settings
 setopt autocd                            # change to directory without cd
 setopt interactivecomments               # allow comments in interactive shell
-setopt automenu                          # show completion menu on a successive tab press
 setopt nobeep                            # disable beeping on tab completion
+setopt automenu                          # show completion menu on successive tabs
 setopt completeinword                    # allow completion from both ends
 setopt alwaystoend                       # move cursor to end of completion
 
@@ -162,7 +175,7 @@ setopt incappendhistory                  # append new history to history file
 source <(dircolors)
 
 # completion config
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' menu select
 zstyle ':completion:*' squeeze-slashes true
@@ -203,15 +216,10 @@ PROMPT2="%8F·%f "
 
 # a list of non-alphanum chars considered part of a word by the line editor.
 # zsh's default is "*?_-.[]~=/&;!#$%^(){}<>"
-WORDCHAR='@_'
+WORDCHAR='@_-'
 
 # generate completion from `--help`
 compdef _gnu_generic fzf
-
-# load other config files
-for config in ${ZDOTDIR}/configs/*.zsh; do
-  source $config
-done
 
 ####################################################
 ## end of zsh settings
@@ -220,8 +228,11 @@ done
 ####################################################
 ## aliases
 ####################################################
-
-alias ls="${${commands[eza]:t}:-ls} --color=auto --group-directories-first"
+if (( ${+commands[eza]} )); then
+  alias ls='eza --icons=auto --git --color=auto --group-directories-first'
+else
+  alias ls='ls --color=auto --group-directories-first'
+fi
 alias la='ls -a'
 alias l='ls -lh'
 alias ll='ls -alh'
