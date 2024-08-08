@@ -65,6 +65,10 @@ config.window_padding = {
 	bottom = 0,
 }
 
+if target:match("linux") then
+	config.window_padding.bottom = 12
+end
+
 config.initial_rows = 36
 config.initial_cols = 110
 
@@ -142,8 +146,10 @@ config.inactive_pane_hsb = {
 
 config.force_reverse_video_cursor = true
 
-config.window_background_opacity = 0
-config.win32_system_backdrop = "Mica"
+if target:match("windows") then
+	config.window_background_opacity = 0
+	config.win32_system_backdrop = "Mica"
+end
 
 config.font_size = 11
 config.font = wezterm.font_with_fallback({
@@ -205,38 +211,41 @@ config.keys = {
 
 return config
 
+--[[
 -- wezterm tab title for retro tab bar
---
--- local function tab_title(tab_info)
--- 	local title = tab_info.tab_title
--- 	-- if the tab title is explicitly set, take that
--- 	if title and #title > 0 then
--- 		return title
--- 	end
--- 	-- Otherwise, use the title from the active pane
--- 	-- in that tab
--- 	return tab_info.active_pane.title
--- end
---
--- wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
--- 	local title = tab_title(tab)
---
--- 	-- ensure that the titles fit in the available space,
--- 	-- and that we have room for the edges.
--- 	local title_left = (tab.tab_index + 1) .. ":"
---
--- 	local function truncate_right(_title, _max_width)
--- 		if #_title > _max_width then
--- 			return _title:sub(1, _max_width - 1) .. "…"
--- 		end
--- 		return _title
--- 	end
---
--- 	title = truncate_right(title, max_width - #title_left - 3)
---
--- 	return {
--- 		{ Text = " " },
--- 		{ Text = title_left .. " " .. title },
--- 		{ Text = " " },
--- 	}
--- end)
+
+local function tab_title(tab_info)
+	local title = tab_info.tab_title
+	-- if the tab title is explicitly set, take that
+	if title and #title > 0 then
+		return title
+	end
+	-- Otherwise, use the title from the active pane
+	-- in that tab
+	return tab_info.active_pane.title
+end
+
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	local title = tab_title(tab)
+
+	-- ensure that the titles fit in the available space,
+	-- and that we have room for the edges.
+	local title_left = (tab.tab_index + 1) .. ":"
+
+	local function truncate_right(_title, _max_width)
+		if #_title > _max_width then
+			return _title:sub(1, _max_width - 1) .. "…"
+		end
+		return _title
+	end
+
+	title = truncate_right(title, max_width - #title_left - 3)
+
+	return {
+		{ Text = " " },
+		{ Text = title_left .. " " .. title },
+		{ Text = " " },
+	}
+end)
+
+--]]
