@@ -3,9 +3,7 @@
 ####################################################
 
 # if not running interactively, don't do anything
-if [[ $- != *i* ]]; then
-  return
-fi
+[[ -o no_interactive ]] && return
 
 # enable powerlevel10k instant prompt. should stay close to the top of ~/.zshrc.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -240,7 +238,7 @@ fi
 alias la='ls -a'
 alias l='ls -lh'
 alias ll='ls -alh'
-alias lr='ls -R'
+alias lr='ls -aR'
 alias lR='ls -alRh'
 
 alias cp='cp -v'

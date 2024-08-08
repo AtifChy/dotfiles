@@ -35,7 +35,6 @@
     # os_icon               # os identifier
     dir                     # current directory
     vcs                     # git status
-    command_execution_time  # duration of the last command
     # =========================[ Line #2 ]=========================
     newline                 # \n
     prompt_char             # prompt symbol
@@ -48,6 +47,7 @@
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     status                  # exit code of the last command
+    command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     #direnv                  # direnv status (https://direnv.net/)
     #asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
@@ -78,14 +78,14 @@
     #haskell_stack           # haskell version from stack (https://haskellstack.org/)
     #kubecontext             # current kubernetes context (https://kubernetes.io/)
     #terraform               # terraform workspace (https://www.terraform.io)
-    ## terraform_version     # terraform version (https://www.terraform.io)
+    # terraform_version     # terraform version (https://www.terraform.io)
     #aws                     # aws profile (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html)
     #aws_eb_env              # aws elastic beanstalk environment (https://aws.amazon.com/elasticbeanstalk/)
     #azure                   # azure account name (https://docs.microsoft.com/en-us/cli/azure)
     #gcloud                  # google cloud cli account and project (https://cloud.google.com/)
     #google_app_cred         # google application credentials (https://cloud.google.com/docs/authentication/production)
     #toolbox                 # toolbox name (https://github.com/containers/toolbox)
-    #context                 # user@hostname
+    context                 # user@hostname
     #nordvpn                 # nordvpn connection status, linux only (https://nordvpn.com/)
     #ranger                  # ranger shell (https://github.com/ranger/ranger)
     #yazi                    # yazi shell (https://github.com/sxyazi/yazi)
@@ -121,7 +121,7 @@
   typeset -g POWERLEVEL9K_MODE=nerdfont-v3
   # When set to `moderate`, some icons will have an extra space after them. This is meant to avoid
   # icon overlap when using non-monospace fonts. When set to `none`, spaces are not added.
-  typeset -g POWERLEVEL9K_ICON_PADDING=moderate
+  typeset -g POWERLEVEL9K_ICON_PADDING=none
 
   # Basic style options that define the overall look of your prompt. You probably don't want to
   # change them.

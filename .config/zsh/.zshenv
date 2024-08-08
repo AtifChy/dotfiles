@@ -1,3 +1,6 @@
+# don't load global config
+setopt no_global_rcs
+
 # xdg specification variables
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
