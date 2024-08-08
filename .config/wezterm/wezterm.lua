@@ -65,8 +65,10 @@ config.window_padding = {
 	bottom = 0,
 }
 
-config.initial_rows = 30
-config.initial_cols = 106
+config.initial_rows = 36
+config.initial_cols = 110
+
+config.use_resize_increments = true
 
 -- config.color_scheme = "OneDark (base16)"
 config.colors = {
@@ -143,45 +145,26 @@ config.force_reverse_video_cursor = true
 config.window_background_opacity = 0
 config.win32_system_backdrop = "Mica"
 
-config.font_size = 12
+config.font_size = 11
 config.font = wezterm.font_with_fallback({
 	{
 		family = "Operator Mono SSm Lig",
-		weight = "DemiLight",
+		weight = "Medium",
 	},
 	{
-		family = "Symbols Nerd Font",
-		scale = 0.9,
+		family = "Symbols Nerd Font Mono",
+		scale = 0.85,
 	},
+	"JetBrains Mono",
+	"Segoe UI Symbol",
+	"Segoe UI Emoji",
 })
 config.font_rules = {
-	{
-		intensity = "Bold",
-		italic = false,
-		font = wezterm.font("Operator Mono SSm Lig", {
-			weight = "Bold",
-		}),
-	},
-	{
-		intensity = "Bold",
-		italic = true,
-		font = wezterm.font("Operator Mono SSm Lig", {
-			weight = "Bold",
-		}),
-	},
-	{
-		intensity = "Normal",
-		italic = true,
-		font = wezterm.font("Operator Mono SSm Lig", {
-			weight = "DemiLight",
-			style = "Italic",
-		}),
-	},
 	{
 		intensity = "Half",
 		italic = false,
 		font = wezterm.font("Operator Mono SSm Lig", {
-			weight = "DemiLight",
+			weight = "Medium",
 			foreground = colors.bright_black,
 		}),
 	},
@@ -189,7 +172,7 @@ config.font_rules = {
 		intensity = "Half",
 		italic = true,
 		font = wezterm.font("Operator Mono SSm Lig", {
-			weight = "DemiLight",
+			weight = "Medium",
 			style = "Italic",
 			foreground = colors.bright_black,
 		}),
@@ -203,7 +186,7 @@ config.cursor_blink_rate = 500
 config.animation_fps = 5
 
 config.cursor_thickness = 1
-config.underline_position = -4
+config.underline_position = -2
 config.underline_thickness = 2
 config.strikethrough_position = "0.5cell"
 
