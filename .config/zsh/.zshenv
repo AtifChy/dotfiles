@@ -15,7 +15,7 @@ export SUDO_PROMPT=$'\e[1;7;31m[sudo]\e[0m password for \e[35m%p\e[0m: '
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # gpg config
-export GPG_TTY="$(tty)"
+export GPG_TTY="$TTY"
 
 # less config
 export LESS='-F -R --use-color -Dd+r$Du+b$DS+ky$DP+kg$DE+kR$'

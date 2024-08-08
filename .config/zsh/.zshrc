@@ -39,15 +39,18 @@ source "$ZGEN_SOURCE/zgenom.zsh"
 zgenom autoupdate
 
 if ! zgenom saved; then
-  ## extensions
-  zgenom load jandamm/zgenom-ext-eval
+  # add compdef before loading plugins
+  zgenom compdef
 
   ## prompt
   zgenom load romkatv/powerlevel10k powerlevel10k
 
+  ## extensions
+  zgenom load jandamm/zgenom-ext-eval
+
   ## plugins
 
-  #local plugins (init)
+  # local plugins (init)
   zgenom load "$ZDOTDIR/plugins/init"
 
   zgenom load zsh-users/zsh-history-substring-search
@@ -56,7 +59,6 @@ if ! zgenom saved; then
 		bindkey '^[[B' history-substring-search-down    # down
 	EOF
 
-  zgenom load zsh-users/zsh-completions
   zgenom load MichaelAquilina/zsh-you-should-use zsh-you-should-use.plugin.zsh
 
   zgenom load hlissner/zsh-autopair zsh-autopair.plugin.zsh
@@ -64,17 +66,16 @@ if ! zgenom saved; then
 		bindkey '^H' autopair-delete-word   # ctrl-backspace
 	EOF
 
-  # create zoxide initialization file
-  zgenom eval --name zoxide < <(zoxide init zsh)
-
-  zgenom load zsh-users/zsh-autosuggestions
-  zgenom load zsh-users/zsh-syntax-highlighting
+  zgenom load zsh-users/zsh-completions
 
   # create aliases for gh copilot
   zgenom eval --name gh-copilot < <(gh copilot alias -- zsh)
 
-  # load fzf completions
+  # setup fzf shell integration
   zgenom eval --name fzf-completion < <(fzf --zsh)
+
+  # create zoxide initialization file
+  zgenom eval --name zoxide < <(zoxide init zsh)
 
   # ohmyzsh
   zgenom ohmyzsh plugins/extract
@@ -86,6 +87,9 @@ if ! zgenom saved; then
 
   # local plugins (lazy)
   zgenom load "$ZDOTDIR/plugins/lazy"
+
+  zgenom load zsh-users/zsh-autosuggestions
+  zgenom load zsh-users/zsh-syntax-highlighting
 
   ## save all to init script
   zgenom save
@@ -262,7 +266,7 @@ alias df='df -h'
 alias du='du -ch'
 alias dmesg='dmesg -H'
 alias free='free -h'
-alias cat='bat --style=plain --paging=never'
+alias cat='bat --style=plain --paging=never --number'
 
 alias reload='exec zsh'
 alias :q='exit'
